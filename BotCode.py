@@ -1,20 +1,37 @@
-# Forward Save Bot - Final Version (Auto-forward to Bot + Admin Group)
+# Forward Save Bot - Final Version (Auto-forward to Bot + Admin Group, Replit 24/7 Ready)
 # Author: ChatGPT x You
-# Purpose: Collect forwarded messages, resend to chat, secretly forward to admin group, admin-only commands
+# Purpose: Collect forwarded messages, resend to chat, secretly forward to admin group, admin-only commands, keep alive with Flask
 
 import logging
 import sqlite3
 import time
+from threading import Thread
+from flask import Flask
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 # ====== SETTINGS ======
 
-BOT_TOKEN = "8138822713:AAG0oPV5lNFm24M_augkPKY9qlesdosnk40"  # Your real bot token
+BOT_TOKEN = "YOUR_BOT_TOKEN"  # Replace with your bot token
 ADMIN_USER_ID = 6923921695  # Your Telegram User ID
 ADMIN_GROUP_ID = -1002341543137  # Your admin group/channel ID with minus sign
 DB_PATH = "forwarded_messages.db"
 START_TIME = time.time()
+
+# ====== FLASK KEEP ALIVE ======
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "I'm alive!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
 
 # ====== LOGGING ======
 
@@ -137,4 +154,5 @@ def main():
     app.run_polling()
 
 if __name__ == '__main__':
+    keep_alive()
     main()
